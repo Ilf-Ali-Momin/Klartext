@@ -1,0 +1,21 @@
+{
+  "sender": {
+    "type": "tax_office"
+  },
+  "letter_date": "2026-09-15",
+  "deadline": {
+    "kind": "relative",
+    "date": null,
+    "relative_period": {
+      "count": 1,
+      "unit": "month",
+      "from": "receipt"
+    }
+  },
+  "amount": {
+    "value": 238
+  },
+  "reference_numbers": [
+    "123/456/78901"
+  ]
+}

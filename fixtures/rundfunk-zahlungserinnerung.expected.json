@@ -1,0 +1,17 @@
+{
+  "sender": {
+    "type": "broadcasting_fee"
+  },
+  "letter_date": "2026-09-02",
+  "deadline": {
+    "kind": "fixed",
+    "date": "2026-09-30",
+    "relative_period": null
+  },
+  "amount": {
+    "value": 55.08
+  },
+  "reference_numbers": [
+    "987 654 321"
+  ]
+}

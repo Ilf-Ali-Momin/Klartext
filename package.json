@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eval": "tsx --tsconfig tsconfig.json scripts/eval.ts",
+    "fixtures": "tsx scripts/make-fixtures.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.132.0",

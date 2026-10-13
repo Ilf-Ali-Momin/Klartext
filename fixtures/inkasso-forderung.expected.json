@@ -1,0 +1,21 @@
+{
+  "sender": {
+    "type": "debt_collector"
+  },
+  "letter_date": "2026-10-05",
+  "deadline": {
+    "kind": "relative",
+    "date": null,
+    "relative_period": {
+      "count": 14,
+      "unit": "day",
+      "from": "letter_date"
+    }
+  },
+  "amount": {
+    "value": 97.35
+  },
+  "reference_numbers": [
+    "IK-2026-004711"
+  ]
+}
