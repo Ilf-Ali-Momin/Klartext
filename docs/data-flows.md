@@ -10,6 +10,7 @@ current terms. Keep this file up to date when the code changes.
 - `POST /api/explain` receives the images or PDF as base64 in the request body and holds them in memory only.
 - The server sends them to the Anthropic API (model from `LLM_MODEL`) together with the system prompt, and receives the structured explanation.
   - Anthropic's own retention and processing location are set by Anthropic's terms and your account settings. Confirm them before launch (owner checklist).
+  - The API's `inference_geo` setting offers only `us` and `global`. The app does not set it, so the workspace default applies. Processing cannot be pinned to the EU.
 - The explanation is returned to the browser and shown there. The server does not write the letter, the extracted text or the explanation to a database, file, log or analytics tool.
 - Server logs contain only a request id, an error type and an HTTP status (`lib/log.ts`).
 - The calendar file (.ics) is built in the browser. Nothing about it is sent to the server.
@@ -27,7 +28,7 @@ There are no analytics, tracking pixels, third party scripts or externally loade
 
 | Table | Content | Retention |
 | --- | --- | --- |
-| `free_usage` | `sha256(ip + IP_HASH_SALT + day)`, the day, a count | deleted after 7 days by `cleanup_free_usage()` |
+| `free_usage` | `sha256(ip + IP_HASH_SALT + day)`, the day, a count | deleted after 7 days by `cleanup_free_usage()`, run nightly by `pg_cron` |
 | `credits` | random code, Stripe Checkout session id, pack, credits total and left, created at | no automatic deletion |
 | `paid_usage` | credit id, the hour, a request count | deleted after 1 day by `cleanup_free_usage()` |
 
@@ -40,5 +41,6 @@ No names, emails, raw IP addresses or letter content are stored. The daily IP ha
 
 ## Hosting
 
-- Next.js on Vercel with functions pinned to `fra1` (Frankfurt), or Docker on Hetzner (phase 6).
+- Next.js on Vercel with functions pinned to `fra1` (Frankfurt), or Docker on Hetzner.
+- Responses carry a same-origin Content Security Policy and `Referrer-Policy: no-referrer`, so the browser loads nothing from third parties and never forwards the success page URL.
 - The host sees request metadata such as IP addresses in its own request logs. Check the host's log retention.
