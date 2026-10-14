@@ -6,8 +6,9 @@ Briefklar is a web app for international students and newcomers in Germany. You 
 the Finanzamt, the Ausländerbehörde, the Jobcenter, your landlord, an insurer or a debt collector, and you get a
 clear action card: who sent it, what it means, what they want from you, and by when.
 
-> **Status:** a personal project, not a public or commercial service. It runs locally, and a demo mode lets you
-> try the whole flow without an API key. Nothing here is legal advice.
+> **Status:** a personal project, not a public or commercial service. There is no hosted version: to try it, run
+> it on your own computer (see below). A demo mode shows the whole flow without an API key. Nothing here is legal
+> advice.
 
 <table>
   <tr>
@@ -73,9 +74,10 @@ suggest) is plain, unit-tested code.
 Next.js 16 (App Router) · TypeScript (strict) · Tailwind CSS 4 · Anthropic TypeScript SDK (Claude Sonnet 5.5,
 structured outputs) · Zod · Stripe Checkout · Supabase Postgres · Vitest
 
-## Try it locally (demo mode, no API key)
+## Run it on your own computer (demo mode, no API key)
 
-Requires Node.js 22 or later.
+The app is not online. These steps start it on your own machine, which takes a few minutes. You need
+[Node.js](https://nodejs.org) 22 or later and git.
 
 ```bash
 git clone https://github.com/Ilf-Ali-Momin/Klartext.git briefklar
@@ -85,9 +87,12 @@ echo "LLM_MOCK=1" > .env.local
 npm run dev
 ```
 
-Open http://localhost:3000 and upload any photo. In demo mode the server returns a fixed, fictional card instead
-of calling the model, and the page says so. The free letter limit still applies; to try again, clear the cookies
-for localhost or use a private window.
+Then open http://localhost:3000 in your browser. `localhost` means your own computer, so this address only works
+on the machine where you ran `npm run dev`.
+
+Upload any photo. In demo mode the app returns a fixed, fictional card instead of calling the AI model, and the
+page says so. The free letter limit still applies; to try again, clear the cookies for localhost or use a private
+window. The screenshots at the top show what you will see.
 
 ## Run with real explanations
 
