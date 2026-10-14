@@ -158,3 +158,7 @@ policy and data processing agreements with every provider. See the owner launch 
 
 Briefklar explains letters. It does not give legal advice. Always check important details against the original
 letter.
+
+## License
+
+[MIT](LICENSE) © 2026 Ilf Ali Momin
