@@ -45,6 +45,13 @@ describe("handleExplain", () => {
     expect(explain).toHaveBeenCalledWith({ kind: "images", images: [JPEG] });
   });
 
+  it("marks demo results so the page can say they are fake", async () => {
+    const res = await handleExplain(post({ images: [JPEG] }), { ...deps, demo: true });
+    expect((await res.json()).demo).toBe(true);
+    const real = await handleExplain(post({ images: [JPEG] }, { ip: "198.51.100.9" }), deps);
+    expect((await real.json()).demo).toBeUndefined();
+  });
+
   it("passes a PDF through as a document", async () => {
     await handleExplain(post({ pdf: "JVBERi0xLjQ=" }), deps);
     expect(explain).toHaveBeenCalledWith({ kind: "pdf", data: "JVBERi0xLjQ=" });

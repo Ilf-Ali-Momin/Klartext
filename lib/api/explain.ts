@@ -105,6 +105,8 @@ export interface ExplainHandlerDeps {
   hour?: string;
   requestId?: string;
   secureCookies?: boolean;
+  /** Demo mode: marks the result as fake so the page can say so. */
+  demo?: boolean;
 }
 
 export async function handleExplain(request: NextRequest, deps: ExplainHandlerDeps): Promise<NextResponse> {
@@ -174,21 +176,25 @@ export async function handleExplain(request: NextRequest, deps: ExplainHandlerDe
   }
 
   const card = enrichCard(result.card, today);
+  const demo = deps.demo ? { demo: true } : {};
 
   if (!card.readable) {
     // An unreadable photo does not use up a letter.
     const creditsLeft = await giveBack();
     return NextResponse.json(
-      { card, ...(creditsLeft !== undefined ? { credits_left: creditsLeft } : {}) },
+      { card, ...demo, ...(creditsLeft !== undefined ? { credits_left: creditsLeft } : {}) },
       { headers: { "x-request-id": requestId } },
     );
   }
 
   if (active.kind === "paid") {
-    return NextResponse.json({ card, credits_left: active.creditsLeft }, { headers: { "x-request-id": requestId } });
+    return NextResponse.json(
+      { card, ...demo, credits_left: active.creditsLeft },
+      { headers: { "x-request-id": requestId } },
+    );
   }
 
-  const response = NextResponse.json({ card }, { headers: { "x-request-id": requestId } });
+  const response = NextResponse.json({ card, ...demo }, { headers: { "x-request-id": requestId } });
   response.cookies.set(FREE_COOKIE, String(freeLettersUsed(freeCookie) + 1), {
     httpOnly: true,
     sameSite: "lax",

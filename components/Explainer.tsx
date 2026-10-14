@@ -13,7 +13,7 @@ import type { EnrichedCard } from "@/lib/llm/explain";
 type State =
   | { status: "idle" }
   | { status: "loading" }
-  | { status: "done"; card: EnrichedCard; creditsLeft?: number }
+  | { status: "done"; card: EnrichedCard; creditsLeft?: number; demo: boolean }
   | { status: "error"; message: string; buyUrl?: string };
 
 export function Explainer() {
@@ -34,6 +34,7 @@ export function Explainer() {
           status: "done",
           card: body.card as EnrichedCard,
           creditsLeft: typeof body.credits_left === "number" ? body.credits_left : undefined,
+          demo: body.demo === true,
         });
       } else {
         setState({
@@ -53,9 +54,15 @@ export function Explainer() {
   }
 
   if (state.status === "done") {
-    const { card, creditsLeft } = state;
+    const { card, creditsLeft, demo } = state;
     return (
       <div className="space-y-4">
+        {demo && (
+          <p role="note" className="rounded-xl border border-warn/40 bg-warn-bg px-4 py-3 text-sm font-medium text-warn">
+            Demo mode: this result is a fixed example and was not made from your upload. Set an API key and remove
+            LLM_MOCK to explain real letters.
+          </p>
+        )}
         {creditsLeft !== undefined && (
           <p className="text-center text-sm text-muted print:hidden">
             {creditsLeft} {creditsLeft === 1 ? "letter" : "letters"} left on your code.
