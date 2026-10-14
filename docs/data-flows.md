@@ -41,6 +41,6 @@ No names, emails, raw IP addresses or letter content are stored. The daily IP ha
 
 ## Hosting
 
-- Next.js on Vercel with functions pinned to `fra1` (Frankfurt), or Docker on Hetzner.
+- Next.js on Vercel with functions pinned to `fra1` (Frankfurt).
 - Responses carry a same-origin Content Security Policy and `Referrer-Policy: no-referrer`, so the browser loads nothing from third parties and never forwards the success page URL.
 - The host sees request metadata such as IP addresses in its own request logs. Check the host's log retention.

@@ -144,8 +144,6 @@ keep.
 
 - **Vercel:** [`vercel.json`](vercel.json) pins functions to `fra1`. Set the environment variables in the project
   settings.
-- **Docker:** the [`Dockerfile`](Dockerfile) builds the standalone Next.js server. Run it behind a reverse proxy
-  such as Caddy for HTTPS.
 - **Database:** run the SQL files in [`supabase/migrations/`](supabase/migrations) in order on a Supabase project
   in an EU region.
 - **Stripe:** create two one-time EUR prices and a webhook for `checkout.session.completed` and

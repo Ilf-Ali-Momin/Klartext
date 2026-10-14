@@ -1,4 +1,4 @@
--- Run the usage counter cleanup every night inside the database, so it works the same on Vercel and Docker.
+-- Run the usage counter cleanup every night inside the database, so it works the same on any host.
 -- pg_cron is a Postgres extension that Supabase provides. Scheduling a job with the same name again replaces it.
 
 create extension if not exists pg_cron;
