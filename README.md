@@ -78,7 +78,7 @@ structured outputs) · Zod · Stripe Checkout · Supabase Postgres · Vitest
 Requires Node.js 22 or later.
 
 ```bash
-git clone <this-repo-url> briefklar
+git clone https://github.com/Ilf-Ali-Momin/Klartext.git briefklar
 cd briefklar
 npm install
 echo "LLM_MOCK=1" > .env.local
