@@ -8,7 +8,7 @@ import { creditStore, formatCode } from "@/lib/credits";
 import { logError } from "@/lib/log";
 import { isStripeConfigured, stripe } from "@/lib/stripe";
 
-export const metadata: Metadata = { title: "Your code · Briefklar", robots: { index: false } };
+export const metadata: Metadata = { title: "Your code · Klartext", robots: { index: false } };
 
 async function claim(sessionId: string | undefined): Promise<ClaimResult | "error"> {
   if (!isStripeConfigured()) return { status: "invalid" };

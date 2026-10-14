@@ -71,7 +71,7 @@ export function Explainer() {
         {card.readable ? (
           <div data-print-card className="space-y-2">
             <p className="hidden text-sm print:block">
-              Explained by Briefklar on {formatDate(todayInGermany())}. Check important details against the original
+              Explained by Klartext on {formatDate(todayInGermany())}. Check important details against the original
               letter.
             </p>
             <LetterCard card={card} today={todayInGermany()} />

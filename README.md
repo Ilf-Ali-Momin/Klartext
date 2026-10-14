@@ -1,8 +1,8 @@
-# Briefklar
+# Klartext
 
 **Understand official German letters in plain English.**
 
-Briefklar is a web app for international students and newcomers in Germany. You take a photo of a letter from
+Klartext is a web app for international students and newcomers in Germany. You take a photo of a letter from
 the Finanzamt, the Ausländerbehörde, the Jobcenter, your landlord, an insurer or a debt collector, and you get a
 clear action card: who sent it, what it means, what they want from you, and by when.
 
@@ -80,8 +80,8 @@ The app is not online. These steps start it on your own machine, which takes a f
 [Node.js](https://nodejs.org) 22 or later and git.
 
 ```bash
-git clone https://github.com/Ilf-Ali-Momin/Klartext.git briefklar
-cd briefklar
+git clone https://github.com/Ilf-Ali-Momin/Klartext.git klartext
+cd klartext
 npm install
 echo "LLM_MOCK=1" > .env.local
 npm run dev
@@ -159,7 +159,7 @@ policy and data processing agreements with every provider. See the owner launch 
 
 ## Disclaimer
 
-Briefklar explains letters. It does not give legal advice. Always check important details against the original
+Klartext explains letters. It does not give legal advice. Always check important details against the original
 letter.
 
 ## License

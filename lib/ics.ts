@@ -49,11 +49,11 @@ export function buildIcs(event: CalendarEvent, now: Date = new Date(), uid: stri
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Briefklar//Letter deadline//EN",
+    "PRODID:-//Klartext//Letter deadline//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
-    `UID:${uid}@briefklar`,
+    `UID:${uid}@klartext`,
     `DTSTAMP:${utcStamp(now)}`,
     `DTSTART;VALUE=DATE:${compactDate(event.date)}`,
     `DTEND;VALUE=DATE:${compactDate(nextDay(event.date))}`,

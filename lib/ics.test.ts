@@ -15,7 +15,7 @@ describe("buildIcs", () => {
     expect(lines).toContain("DTSTART;VALUE=DATE:20261231");
     expect(lines).toContain("DTEND;VALUE=DATE:20270101");
     expect(lines).toContain("DTSTAMP:20261014T093000Z");
-    expect(lines).toContain("UID:fixed-uid@briefklar");
+    expect(lines).toContain("UID:fixed-uid@klartext");
   });
 
   it("sets an alarm 3 days before", () => {

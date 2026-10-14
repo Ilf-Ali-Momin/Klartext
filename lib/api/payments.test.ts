@@ -45,7 +45,7 @@ describe("handleCheckout", () => {
   );
   const deps = {
     createSession,
-    appUrl: "https://briefklar.example",
+    appUrl: "https://klartext.example",
     priceFor: (env: string) => (env === "STRIPE_PRICE_PACK5" ? "price_5" : env === "STRIPE_PRICE_PACK15" ? "price_15" : undefined),
     requestId: "req",
   };
@@ -60,8 +60,8 @@ describe("handleCheckout", () => {
       mode: "payment",
       line_items: [{ price: "price_15", quantity: 1 }],
       metadata: { pack: "pack15" },
-      success_url: "https://briefklar.example/success?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "https://briefklar.example/buy",
+      success_url: "https://klartext.example/success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "https://klartext.example/buy",
     });
   });
 

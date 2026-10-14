@@ -3,7 +3,7 @@ import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Briefklar",
+  title: "Klartext",
   description: "Understand official German letters in plain English.",
 };
 

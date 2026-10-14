@@ -7,7 +7,7 @@ import { PACKS, type Pack } from "@/lib/config";
 import { formatEuro } from "@/lib/format";
 import { isStripeConfigured, stripe } from "@/lib/stripe";
 
-export const metadata: Metadata = { title: "Letter packs · Briefklar" };
+export const metadata: Metadata = { title: "Letter packs · Klartext" };
 
 type Prices = Partial<Record<Pack["id"], number>>;
 
