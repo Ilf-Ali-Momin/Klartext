@@ -26,7 +26,7 @@ function urgencyReason(card: EnrichedCard): string {
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="space-y-2 border-t border-line pt-5">
+    <section className="break-inside-avoid space-y-2 border-t border-line pt-5">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">{title}</h2>
       {children}
     </section>
@@ -60,7 +60,7 @@ export function LetterCard({ card, today }: { card: EnrichedCard; today: string 
   const hasPayment = payment && (payment.recipient || payment.iban || payment.reference);
 
   return (
-    <article className="space-y-5 rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-7">
+    <article className="space-y-5 rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-7 print:rounded-none print:border-0 print:p-0 print:shadow-none">
       <div className={`rounded-xl border px-4 py-3 ${urgency.className}`} role="status">
         <p className="text-lg font-semibold">{urgency.title}</p>
         <p className="text-sm">{urgencyReason(card)}</p>
@@ -144,7 +144,7 @@ export function LetterCard({ card, today }: { card: EnrichedCard; today: string 
       )}
 
       {card.caution_flags.length > 0 && (
-        <div className="rounded-xl border border-warn/30 bg-warn-bg p-4 text-warn">
+        <div className="break-inside-avoid rounded-xl border border-warn/30 bg-warn-bg p-4 text-warn">
           <p className="font-semibold">Be careful</p>
           <ul className="mt-1 list-disc space-y-1 pl-5 text-sm">
             {card.caution_flags.map((flag, i) => (

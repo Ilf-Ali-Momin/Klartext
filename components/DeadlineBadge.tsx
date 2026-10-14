@@ -24,7 +24,7 @@ export function DeadlineBadge({ card, today }: { card: EnrichedCard; today: stri
   const estimated = deadline.kind === "relative" && date !== null;
 
   return (
-    <section aria-labelledby="deadline-heading" className="space-y-3">
+    <section aria-labelledby="deadline-heading" className="break-inside-avoid space-y-3">
       <h2 id="deadline-heading" className="text-sm font-semibold uppercase tracking-wide text-muted">
         Deadline
       </h2>

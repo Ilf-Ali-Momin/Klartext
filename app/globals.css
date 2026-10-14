@@ -55,6 +55,37 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+@media print {
+  /* Always print light, also for people who use dark mode. */
+  :root {
+    --background: #ffffff;
+    --foreground: #000000;
+    --surface: #ffffff;
+    --subtle: #f2f2f2;
+    --line: #cccccc;
+    --muted: #444444;
+    --danger: #8a0000;
+    --danger-bg: #ffffff;
+    --warn: #6b3a00;
+    --warn-bg: #ffffff;
+    --ok: #0f5129;
+    --ok-bg: #ffffff;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+
+  /* When a result card is on the page, print only the card. */
+  body:has([data-print-card]) [data-print-hide-when-result] {
+    display: none;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

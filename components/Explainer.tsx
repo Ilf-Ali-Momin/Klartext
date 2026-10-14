@@ -5,6 +5,7 @@ import { useState } from "react";
 import { LetterCard } from "@/components/LetterCard";
 import { Uploader, type UploadPayload } from "@/components/Uploader";
 import { todayInGermany } from "@/lib/deadline";
+import { formatDate } from "@/lib/format";
 import type { EnrichedCard } from "@/lib/llm/explain";
 
 // Upload, explain and show the result. The card lives only in this component's state.
@@ -56,12 +57,18 @@ export function Explainer() {
     return (
       <div className="space-y-4">
         {creditsLeft !== undefined && (
-          <p className="text-center text-sm text-muted">
+          <p className="text-center text-sm text-muted print:hidden">
             {creditsLeft} {creditsLeft === 1 ? "letter" : "letters"} left on your code.
           </p>
         )}
         {card.readable ? (
-          <LetterCard card={card} today={todayInGermany()} />
+          <div data-print-card className="space-y-2">
+            <p className="hidden text-sm print:block">
+              Explained by Briefklar on {formatDate(todayInGermany())}. Check important details against the original
+              letter.
+            </p>
+            <LetterCard card={card} today={todayInGermany()} />
+          </div>
         ) : (
           <div className="space-y-3 rounded-2xl border border-line bg-surface p-5">
             <h2 className="text-lg font-semibold">We couldn&apos;t read this letter</h2>
@@ -74,6 +81,15 @@ export function Explainer() {
             </ul>
             <p className="text-sm text-muted">This did not use up your letter.</p>
           </div>
+        )}
+        {card.readable && (
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="w-full rounded-xl border border-line px-5 py-3 font-semibold hover:bg-subtle print:hidden"
+          >
+            Print or save as PDF
+          </button>
         )}
         <button
           type="button"
