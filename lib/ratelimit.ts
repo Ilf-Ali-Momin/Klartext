@@ -75,12 +75,13 @@ export function supabaseFreeUsageStore(): FreeUsageStore {
   };
 }
 
-let devStore: FreeUsageStore | null = null;
+// Kept on globalThis so every route bundle in `next dev` shares one store.
+const devStores = globalThis as typeof globalThis & { __bkFreeUsageStore?: FreeUsageStore };
 
 /** Supabase when configured. In development without Supabase, an in-memory store for this process. */
 export function freeUsageStore(): FreeUsageStore {
   if (isSupabaseConfigured()) return supabaseFreeUsageStore();
   if (process.env.NODE_ENV === "production") throw new Error("Supabase is not configured");
-  devStore ??= memoryFreeUsageStore();
-  return devStore;
+  devStores.__bkFreeUsageStore ??= memoryFreeUsageStore();
+  return devStores.__bkFreeUsageStore;
 }

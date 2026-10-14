@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { LetterCard } from "@/components/LetterCard";
 import { Uploader, type UploadPayload } from "@/components/Uploader";
@@ -11,7 +12,7 @@ import type { EnrichedCard } from "@/lib/llm/explain";
 type State =
   | { status: "idle" }
   | { status: "loading" }
-  | { status: "done"; card: EnrichedCard }
+  | { status: "done"; card: EnrichedCard; creditsLeft?: number }
   | { status: "error"; message: string; buyUrl?: string };
 
 export function Explainer() {
@@ -28,7 +29,11 @@ export function Explainer() {
       });
       const body = await response.json().catch(() => null);
       if (response.ok && body?.card) {
-        setState({ status: "done", card: body.card as EnrichedCard });
+        setState({
+          status: "done",
+          card: body.card as EnrichedCard,
+          creditsLeft: typeof body.credits_left === "number" ? body.credits_left : undefined,
+        });
       } else {
         setState({
           status: "error",
@@ -47,9 +52,14 @@ export function Explainer() {
   }
 
   if (state.status === "done") {
-    const { card } = state;
+    const { card, creditsLeft } = state;
     return (
       <div className="space-y-4">
+        {creditsLeft !== undefined && (
+          <p className="text-center text-sm text-muted">
+            {creditsLeft} {creditsLeft === 1 ? "letter" : "letters"} left on your code.
+          </p>
+        )}
         {card.readable ? (
           <LetterCard card={card} today={todayInGermany()} />
         ) : (
@@ -88,9 +98,9 @@ export function Explainer() {
         <div role="alert" className="space-y-2 rounded-xl bg-danger-bg px-4 py-3 text-danger">
           <p>{state.message}</p>
           {state.buyUrl && (
-            <a href={state.buyUrl} className="inline-block font-semibold underline">
+            <Link href={state.buyUrl} className="inline-block font-semibold underline">
               See letter packs
-            </a>
+            </Link>
           )}
         </div>
       )}

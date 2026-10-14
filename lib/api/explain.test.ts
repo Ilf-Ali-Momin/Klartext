@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { handleExplain, type ExplainHandlerDeps } from "@/lib/api/explain";
+import { CODE_COOKIE, memoryCreditStore, type CreditStore } from "@/lib/credits";
 import type { ExplainResult } from "@/lib/llm/explain";
 import { FREE_COOKIE, memoryFreeUsageStore, type FreeUsageStore } from "@/lib/ratelimit";
 import { sampleCard } from "@/lib/test-helpers";
@@ -20,13 +21,15 @@ function post(body: unknown, init: { cookie?: string; ip?: string; raw?: string 
 
 describe("handleExplain", () => {
   let store: FreeUsageStore;
+  let credits: CreditStore;
   let explain: ReturnType<typeof vi.fn<(input: unknown) => Promise<ExplainResult>>>;
   let deps: ExplainHandlerDeps;
 
   beforeEach(() => {
     store = memoryFreeUsageStore();
+    credits = memoryCreditStore();
     explain = vi.fn(async () => ({ ok: true as const, card: sampleCard() }));
-    deps = { store, explain, salt: "test", today: TODAY, requestId: "req-1" };
+    deps = { store, credits, explain, salt: "test", today: TODAY, hour: "2026-10-14T09:00:00.000Z", requestId: "req-1" };
   });
 
   it("explains the first free letter and marks the device", async () => {
@@ -126,5 +129,82 @@ describe("handleExplain", () => {
     expect(output).not.toContain("Finanzamt");
     errors.mockRestore();
     logs.mockRestore();
+  });
+
+  describe("with a credit code", () => {
+    const CODE = "ABCDEFGHJK";
+    const USED_FREE = `${FREE_COOKIE}=1; ${CODE_COOKIE}=${CODE}`;
+
+    beforeEach(async () => {
+      await credits.create({ code: CODE, sessionId: "cs_test_1", pack: "pack5", credits: 2 });
+    });
+
+    it("uses a credit once the free letter is used and reports what is left", async () => {
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie: USED_FREE }), deps);
+      expect(res.status).toBe(200);
+      expect((await res.json()).credits_left).toBe(1);
+      expect(await credits.creditsLeft(CODE)).toBe(1);
+      expect(res.cookies.get(FREE_COOKIE)).toBeUndefined();
+    });
+
+    it("uses the free letter first", async () => {
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie: `${CODE_COOKIE}=${CODE}` }), deps);
+      expect(res.status).toBe(200);
+      expect(await credits.creditsLeft(CODE)).toBe(2);
+      expect(res.cookies.get(FREE_COOKIE)?.value).toBe("1");
+    });
+
+    it("falls back to the code when the network's free limit is reached", async () => {
+      for (let i = 0; i < 3; i++) await handleExplain(post({ images: [JPEG] }), deps);
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie: `${CODE_COOKIE}=${CODE}` }), deps);
+      expect(res.status).toBe(200);
+      expect(await credits.creditsLeft(CODE)).toBe(1);
+    });
+
+    it("returns 402 when the code has no credits left", async () => {
+      await handleExplain(post({ images: [JPEG] }, { cookie: USED_FREE }), deps);
+      await handleExplain(post({ images: [JPEG] }, { cookie: USED_FREE }), deps);
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie: USED_FREE }), deps);
+      expect(res.status).toBe(402);
+      expect(await res.json()).toMatchObject({ error: "no_credits_left", buy_url: "/buy" });
+      expect(explain).toHaveBeenCalledTimes(2);
+    });
+
+    it("returns 402 for an unknown code", async () => {
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie: `${FREE_COOKIE}=1; ${CODE_COOKIE}=ZZZZZZZZZZ` }), deps);
+      expect(res.status).toBe(402);
+      expect(explain).not.toHaveBeenCalled();
+    });
+
+    it("refunds the credit when the model fails", async () => {
+      explain.mockResolvedValue({ ok: false, reason: "upstream", status: 529 });
+      const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+      expect((await handleExplain(post({ images: [JPEG] }, { cookie: USED_FREE }), deps)).status).toBe(502);
+      expect(await credits.creditsLeft(CODE)).toBe(2);
+      errors.mockRestore();
+    });
+
+    it("refunds the credit when the photo is unreadable", async () => {
+      explain.mockResolvedValue({
+        ok: true,
+        card: sampleCard({ readable: false, unreadable_reason: "The photo is blurry." }),
+      });
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie: USED_FREE }), deps);
+      expect((await res.json()).credits_left).toBe(2);
+      expect(await credits.creditsLeft(CODE)).toBe(2);
+    });
+
+    it("limits requests per code per hour", async () => {
+      await credits.create({ code: "MMMMMMMMMM", sessionId: "cs_test_2", pack: "pack15", credits: 50 });
+      const cookie = `${FREE_COOKIE}=1; ${CODE_COOKIE}=MMMMMMMMMM`;
+      for (let i = 0; i < 20; i++) {
+        expect((await handleExplain(post({ images: [JPEG] }, { cookie }), deps)).status).toBe(200);
+      }
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie }), deps);
+      expect(res.status).toBe(429);
+      expect((await res.json()).error).toBe("paid_rate_limit");
+      const nextHour = await handleExplain(post({ images: [JPEG] }, { cookie }), { ...deps, hour: "2026-10-14T10:00:00.000Z" });
+      expect(nextHour.status).toBe(200);
+    });
   });
 });

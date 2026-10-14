@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { CodeForm } from "@/components/CodeForm";
 import { Explainer } from "@/components/Explainer";
 import { LetterCard } from "@/components/LetterCard";
 import { SAMPLE_CARD, SAMPLE_LETTER_EXCERPT, SAMPLE_TODAY } from "@/lib/sample-card";
@@ -20,7 +22,18 @@ export default function Home() {
         </p>
       </section>
 
-      <Explainer />
+      <div className="space-y-3">
+        <Explainer />
+        <details className="rounded-xl border border-line bg-surface px-4 py-3">
+          <summary className="cursor-pointer font-medium">Have a code?</summary>
+          <div className="pt-3">
+            <CodeForm />
+          </div>
+        </details>
+        <p className="text-center text-sm text-muted">
+          More letters? <Link href="/buy" className="font-medium underline">See letter packs</Link>
+        </p>
+      </div>
 
       <section className="space-y-4" aria-labelledby="example-heading">
         <h2 id="example-heading" className="text-xl font-semibold">
