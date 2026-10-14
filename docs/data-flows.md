@@ -1,8 +1,8 @@
-# Data flows (technical facts for the privacy policy)
+# Data flows
 
-This file describes what the code does with data. It is not a privacy policy and not legal advice. Whoever
-writes the Datenschutzerklärung should check every point against the deployed setup and the providers'
-current terms. Keep this file up to date when the code changes.
+This file describes, as technical facts, what the code does with data. It is not a privacy policy and not legal
+advice. If the app is ever offered to the public, whoever writes the privacy policy should check every point
+against the deployed setup and the providers' current terms. Keep this file up to date when the code changes.
 
 ## Uploaded letters
 

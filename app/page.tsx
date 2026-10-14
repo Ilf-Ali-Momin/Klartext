@@ -54,7 +54,6 @@ export default function Home() {
         </ul>
         <p className="text-sm text-muted">
           The explanation is not legal advice. For decisions about your own case, each card tells you who can help.
-          Details are in our <Link href="/datenschutz" className="underline">privacy policy</Link>.
         </p>
       </section>
 
