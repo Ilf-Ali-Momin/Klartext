@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import { Footer } from "@/components/Footer";
+import { isPublicDemo } from "@/lib/demo";
 import "./globals.css";
 
 // Barlow echoes DIN, the typeface of German forms and signs. next/font downloads it at build time and serves it
@@ -26,6 +27,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        {isPublicDemo() && (
+          <p className="bg-marker px-4 py-2 text-center text-sm font-medium text-[#14182b] print:hidden">
+            Demo: every result is the same fictional example. Your photo is not read or stored.
+          </p>
+        )}
         {children}
         <Footer />
       </body>

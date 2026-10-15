@@ -94,7 +94,7 @@ function toLetterInput(body: ExplainRequest): LetterInput {
     : { kind: "images", images: body.images.map((image) => ({ mediaType: image.mediaType, data: image.data })) };
 }
 
-type Entitlement = { kind: "free"; ipHash: string } | { kind: "paid"; code: string; creditsLeft: number };
+type Entitlement = { kind: "unlimited" } | { kind: "free"; ipHash: string } | { kind: "paid"; code: string; creditsLeft: number };
 
 export interface ExplainHandlerDeps {
   explain?: (input: LetterInput) => Promise<ExplainResult>;
@@ -107,6 +107,8 @@ export interface ExplainHandlerDeps {
   secureCookies?: boolean;
   /** Demo mode: marks the result as fake so the page can say so. */
   demo?: boolean;
+  /** Public demo: no free letter or credit checks, nothing counted. */
+  unlimited?: boolean;
 }
 
 export async function handleExplain(request: NextRequest, deps: ExplainHandlerDeps): Promise<NextResponse> {
@@ -129,9 +131,9 @@ export async function handleExplain(request: NextRequest, deps: ExplainHandlerDe
   // Entitlement: the device's free letter first, then a credit code.
   const freeCookie = request.cookies.get(FREE_COOKIE)?.value;
   const code = normalizeCode(request.cookies.get(CODE_COOKIE)?.value ?? "");
-  let entitlement: Entitlement | null = null;
+  let entitlement: Entitlement | null = deps.unlimited ? { kind: "unlimited" } : null;
 
-  if (hasFreeLetterLeft(freeCookie)) {
+  if (!entitlement && hasFreeLetterLeft(freeCookie)) {
     const ipHash = hashIp(clientIp(request.headers), deps.salt, today);
     if (await deps.store.consume(ipHash, today, FREE_LETTERS_PER_IP_PER_DAY)) {
       entitlement = { kind: "free", ipHash };
@@ -155,6 +157,7 @@ export async function handleExplain(request: NextRequest, deps: ExplainHandlerDe
   const active = entitlement;
   /** Give the letter back. Returns the credits left for a paid code. */
   async function giveBack(): Promise<number | undefined> {
+    if (active.kind === "unlimited") return undefined;
     if (active.kind === "free") {
       await deps.store.release(active.ipHash, today);
       return undefined;
@@ -195,6 +198,7 @@ export async function handleExplain(request: NextRequest, deps: ExplainHandlerDe
   }
 
   const response = NextResponse.json({ card, ...demo }, { headers: { "x-request-id": requestId } });
+  if (active.kind === "unlimited") return response;
   response.cookies.set(FREE_COOKIE, String(freeLettersUsed(freeCookie) + 1), {
     httpOnly: true,
     sameSite: "lax",

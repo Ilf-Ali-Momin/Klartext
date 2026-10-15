@@ -1,11 +1,13 @@
 import { addPeriod, todayInGermany } from "@/lib/deadline";
+import { isPublicDemo } from "@/lib/demo";
 import type { ExplainResult } from "@/lib/llm/explain";
 import type { LetterCard } from "@/lib/llm/schema";
 
-// Demo mode: LLM_MOCK=1 returns a fixed, fictional card instead of calling the model. Development only.
-// It never reads the uploaded letter.
+// Demo mode: LLM_MOCK=1 (development) or DEMO_DEPLOYMENT=1 (public demo) returns a fixed, fictional card
+// instead of calling the model. It never reads the uploaded letter.
 
 export function isMockEnabled(): boolean {
+  if (isPublicDemo()) return true;
   if (process.env.LLM_MOCK !== "1") return false;
   if (process.env.NODE_ENV === "production") throw new Error("LLM_MOCK must not be set in production");
   return true;

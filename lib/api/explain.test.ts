@@ -52,6 +52,14 @@ describe("handleExplain", () => {
     expect((await real.json()).demo).toBeUndefined();
   });
 
+  it("never limits or counts letters in a public demo", async () => {
+    for (let i = 0; i < 6; i++) {
+      const res = await handleExplain(post({ images: [JPEG] }, { cookie: `${FREE_COOKIE}=1` }), { ...deps, unlimited: true });
+      expect(res.status).toBe(200);
+      expect(res.cookies.get(FREE_COOKIE)).toBeUndefined();
+    }
+  });
+
   it("passes a PDF through as a document", async () => {
     await handleExplain(post({ pdf: "JVBERi0xLjQ=" }), deps);
     expect(explain).toHaveBeenCalledWith({ kind: "pdf", data: "JVBERi0xLjQ=" });

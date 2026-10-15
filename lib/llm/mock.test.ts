@@ -26,4 +26,11 @@ describe("demo mode", () => {
     vi.stubEnv("NODE_ENV", "production");
     expect(() => isMockEnabled()).toThrow("production");
   });
+
+  it("is always on in a public demo deployment, also in production", () => {
+    vi.stubEnv("LLM_MOCK", "");
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("DEMO_DEPLOYMENT", "1");
+    expect(isMockEnabled()).toBe(true);
+  });
 });

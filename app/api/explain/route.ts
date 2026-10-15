@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { errorResponse, handleExplain } from "@/lib/api/explain";
 import { creditStore } from "@/lib/credits";
+import { isPublicDemo } from "@/lib/demo";
 import { isMockEnabled, mockExplain } from "@/lib/llm/mock";
 import { logError } from "@/lib/log";
 import { freeUsageStore, ipHashSalt } from "@/lib/ratelimit";
@@ -15,6 +16,7 @@ export async function POST(request: NextRequest) {
     if (!demo && !process.env.ANTHROPIC_API_KEY) return errorResponse("not_configured", requestId);
     return await handleExplain(request, {
       ...(demo ? { explain: mockExplain, demo: true } : {}),
+      ...(isPublicDemo() ? { unlimited: true } : {}),
       store: freeUsageStore(),
       credits: creditStore(),
       salt: ipHashSalt(),

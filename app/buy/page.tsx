@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { CodeForm } from "@/components/CodeForm";
+import { isPublicDemo } from "@/lib/demo";
 import { PACKS, type Pack } from "@/lib/config";
 import { formatEuro } from "@/lib/format";
 import { isStripeConfigured, stripe } from "@/lib/stripe";
@@ -79,9 +80,15 @@ export default function BuyPage() {
         <p className="text-lg text-muted">Pay once. No account, no subscription. Failed or unreadable letters are free.</p>
       </section>
 
-      <Suspense fallback={<PackList prices={{}} />}>
-        <PackListWithPrices />
-      </Suspense>
+      {isPublicDemo() ? (
+        <p className="rounded-[4px] border-l-4 border-warn bg-warn-bg px-4 py-3 font-medium text-warn">
+          Buying is turned off in this demo.
+        </p>
+      ) : (
+        <Suspense fallback={<PackList prices={{}} />}>
+          <PackListWithPrices />
+        </Suspense>
+      )}
 
       <p className="text-sm text-muted">Payment by Stripe. We never see your card, name or email.</p>
 

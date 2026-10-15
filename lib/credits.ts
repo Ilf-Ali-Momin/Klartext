@@ -1,5 +1,6 @@
 import { randomInt } from "node:crypto";
 import { PACKS, type Pack } from "@/lib/config";
+import { isPublicDemo } from "@/lib/demo";
 import { isSupabaseConfigured, supabaseAdmin } from "@/lib/supabase";
 
 // Paid credit codes: create after payment, reserve before a model call, refund when the call fails.
@@ -144,7 +145,7 @@ const devStores = globalThis as typeof globalThis & { __bkCreditStore?: CreditSt
 /** Supabase when configured. In development without Supabase, an in-memory store for this process. */
 export function creditStore(): CreditStore {
   if (isSupabaseConfigured()) return supabaseCreditStore();
-  if (process.env.NODE_ENV === "production") throw new Error("Supabase is not configured");
+  if (process.env.NODE_ENV === "production" && !isPublicDemo()) throw new Error("Supabase is not configured");
   devStores.__bkCreditStore ??= memoryCreditStore();
   return devStores.__bkCreditStore;
 }

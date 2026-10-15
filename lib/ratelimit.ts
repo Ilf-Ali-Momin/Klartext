@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { FREE_LETTERS_PER_DEVICE } from "@/lib/config";
+import { isPublicDemo } from "@/lib/demo";
 import { isSupabaseConfigured, supabaseAdmin } from "@/lib/supabase";
 
 // Free tier limits: one letter per device (httpOnly cookie) and a daily cap per hashed IP address.
@@ -36,7 +37,7 @@ export function hasFreeLetterLeft(cookieValue: string | undefined): boolean {
 export function ipHashSalt(): string {
   const salt = process.env.IP_HASH_SALT;
   if (salt) return salt;
-  if (process.env.NODE_ENV === "production") throw new Error("IP_HASH_SALT is not set");
+  if (process.env.NODE_ENV === "production" && !isPublicDemo()) throw new Error("IP_HASH_SALT is not set");
   return "development-only-salt";
 }
 
@@ -81,7 +82,7 @@ const devStores = globalThis as typeof globalThis & { __bkFreeUsageStore?: FreeU
 /** Supabase when configured. In development without Supabase, an in-memory store for this process. */
 export function freeUsageStore(): FreeUsageStore {
   if (isSupabaseConfigured()) return supabaseFreeUsageStore();
-  if (process.env.NODE_ENV === "production") throw new Error("Supabase is not configured");
+  if (process.env.NODE_ENV === "production" && !isPublicDemo()) throw new Error("Supabase is not configured");
   devStores.__bkFreeUsageStore ??= memoryFreeUsageStore();
   return devStores.__bkFreeUsageStore;
 }
