@@ -18,13 +18,13 @@ export function CopyField({ label, value, mono = true }: { label: string; value:
   return (
     <div className="flex items-center justify-between gap-3 py-2">
       <div className="min-w-0">
-        <div className="text-xs uppercase tracking-wide text-muted">{label}</div>
-        <div className={`break-all select-all ${mono ? "font-mono text-[0.95rem]" : ""}`}>{value}</div>
+        <div className="text-sm text-muted">{label}</div>
+        <div className={`[overflow-wrap:anywhere] select-all ${mono ? "font-mono text-[0.95rem]" : ""}`}>{value}</div>
       </div>
       <button
         type="button"
         onClick={copy}
-        className="shrink-0 rounded-lg border border-line px-3 py-1.5 text-sm font-medium hover:bg-subtle print:hidden"
+        className="shrink-0 rounded-[6px] border-2 border-line px-3 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent print:hidden"
         aria-label={`Copy ${label}`}
       >
         {copied ? "Copied" : "Copy"}

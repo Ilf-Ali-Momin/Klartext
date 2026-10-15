@@ -8,10 +8,10 @@ import { ACT_NOW_WITHIN_DAYS } from "@/lib/deadline";
 import { formatDate, formatEuro } from "@/lib/format";
 import type { EnrichedCard } from "@/lib/llm/explain";
 
-const URGENCY = {
-  act_now: { title: "Act now", className: "bg-danger-bg text-danger border-danger/30" },
-  act_soon: { title: "Act before the deadline", className: "bg-warn-bg text-warn border-warn/30" },
-  info_only: { title: "For your information", className: "bg-ok-bg text-ok border-ok/30" },
+const STAMP = {
+  act_now: { text: "Act now", className: "text-danger" },
+  act_soon: { text: "To do", className: "text-accent" },
+  info_only: { text: "For info", className: "text-ok" },
 } as const;
 
 function urgencyReason(card: EnrichedCard): string {
@@ -21,13 +21,13 @@ function urgencyReason(card: EnrichedCard): string {
       : `The deadline is within ${ACT_NOW_WITHIN_DAYS} days or has passed.`;
   }
   if (card.urgency === "act_soon") return "The letter asks you to do something by a deadline.";
-  return "This letter does not set a deadline.";
+  return "Nothing to do by a deadline.";
 }
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="break-inside-avoid space-y-2 border-t border-line pt-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">{title}</h2>
+    <section className="break-inside-avoid space-y-2 border-t border-dashed border-line pt-5">
+      <h2 className="font-display text-xl font-bold">{title}</h2>
       {children}
     </section>
   );
@@ -36,7 +36,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 function Checklist({ items }: { items: string[] }) {
   const [done, setDone] = useState<boolean[]>(() => items.map(() => false));
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-2.5">
       {items.map((item, i) => (
         <li key={i}>
           <label className="flex cursor-pointer gap-3">
@@ -44,7 +44,7 @@ function Checklist({ items }: { items: string[] }) {
               type="checkbox"
               checked={done[i]}
               onChange={() => setDone((d) => d.map((v, j) => (j === i ? !v : v)))}
-              className="mt-1 size-4 shrink-0 accent-accent"
+              className="mt-1 size-5 shrink-0 accent-accent"
             />
             <span className={done[i] ? "text-muted line-through" : ""}>{item}</span>
           </label>
@@ -55,54 +55,57 @@ function Checklist({ items }: { items: string[] }) {
 }
 
 export function LetterCard({ card, today }: { card: EnrichedCard; today: string }) {
-  const urgency = URGENCY[card.urgency];
+  const stamp = STAMP[card.urgency];
   const payment = card.payment;
   const hasPayment = payment && (payment.recipient || payment.iban || payment.reference);
 
   return (
-    <article className="space-y-5 rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-7 print:rounded-none print:border-0 print:p-0 print:shadow-none">
-      <div className={`rounded-xl border px-4 py-3 ${urgency.className}`} role="status">
-        <p className="text-lg font-semibold">{urgency.title}</p>
-        <p className="text-sm">{urgencyReason(card)}</p>
-      </div>
-
+    <article className="relative space-y-5 rounded-[4px] bg-surface p-6 shadow-[0_1px_0_var(--line),0_22px_44px_-26px_rgba(20,24,43,0.55)] sm:p-8 print:p-0 print:shadow-none">
+      <span
+        className={`stamp absolute -top-3 right-3 bg-surface sm:right-6 ${stamp.className}`}
+        role="status"
+        aria-label={`${stamp.text}. ${urgencyReason(card)}`}
+      >
+        {stamp.text}
+      </span>
       <header className="space-y-1">
-        <p className="text-sm text-muted">
-          {card.sender.name}
-          {card.letter_date && ` · ${formatDate(card.letter_date)}`}
-        </p>
-        <h1 className="text-xl font-semibold">{card.letter_type}</h1>
-        {card.confidence !== "high" && (
-          <p className="text-sm text-warn">
-            Parts of this letter were hard to read. Check the details against the original.
-          </p>
-        )}
+        <p className="pr-28 text-sm text-muted">{card.sender.name}</p>
+        <h2 className="font-display text-3xl font-bold leading-[1.05] text-balance">{card.letter_type}</h2>
+        {card.letter_date && <p className="text-sm text-muted">Letter from {formatDate(card.letter_date)}</p>}
       </header>
 
-      <DeadlineBadge card={card} today={today} />
+      {card.confidence !== "high" && (
+        <p className="rounded-[4px] border-l-4 border-warn bg-warn-bg px-3 py-2 text-sm text-warn">
+          Parts were hard to read. Check the details against the original.
+        </p>
+      )}
+
+      <DeadlineBadge card={card} today={today} reason={urgencyReason(card)} />
 
       {card.what_they_want.length > 0 && (
-        <Section title="What they want from you">
+        <Section title="To do">
           <Checklist items={card.what_they_want} />
         </Section>
       )}
 
-      <Section title="What the letter says">
+      <Section title="What it says">
         <p className="leading-relaxed">{card.summary}</p>
         {card.if_ignored && (
           <p className="leading-relaxed">
-            <span className="font-medium">If nothing happens: </span>
+            <span className="font-semibold">If nothing happens: </span>
             {card.if_ignored}
           </p>
         )}
       </Section>
 
       {(card.amount || hasPayment) && (
-        <Section title="Amount and payment">
+        <Section title="Pay">
           {card.amount && (
             <div className="pb-1">
-              <p className="text-2xl font-semibold">{formatEuro(card.amount.value)}</p>
-              <p className="text-muted">{card.amount.what_for}</p>
+              <p className="font-display text-4xl font-extrabold leading-none">
+                <span className="marker">{formatEuro(card.amount.value)}</span>
+              </p>
+              <p className="mt-2 text-muted">{card.amount.what_for}</p>
             </div>
           )}
           {hasPayment && (
@@ -126,7 +129,7 @@ export function LetterCard({ card, today }: { card: EnrichedCard; today: string 
       )}
 
       {card.key_terms.length > 0 && (
-        <Section title="Key German terms">
+        <Section title="Words to know">
           <dl className="space-y-3">
             {card.key_terms.map((term, i) => (
               <div key={i}>
@@ -144,8 +147,8 @@ export function LetterCard({ card, today }: { card: EnrichedCard; today: string 
       )}
 
       {card.caution_flags.length > 0 && (
-        <div className="break-inside-avoid rounded-xl border border-warn/30 bg-warn-bg p-4 text-warn">
-          <p className="font-semibold">Be careful</p>
+        <div className="break-inside-avoid rounded-[4px] border-l-4 border-warn bg-warn-bg p-4 text-warn">
+          <p className="font-display text-xl font-bold">Watch out</p>
           <ul className="mt-1 list-disc space-y-1 pl-5 text-sm">
             {card.caution_flags.map((flag, i) => (
               <li key={i}>{flag}</li>
@@ -154,13 +157,11 @@ export function LetterCard({ card, today }: { card: EnrichedCard; today: string 
         </div>
       )}
 
-      <Section title="Need advice about your situation?">
-        <p>
-          Ask {card.referral}.
-        </p>
+      <Section title="Need advice?">
+        <p>Ask {card.referral}.</p>
       </Section>
 
-      <div className="border-t border-line pt-4">
+      <div className="border-t border-dashed border-line pt-4">
         <Disclaimer />
       </div>
     </article>

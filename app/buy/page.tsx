@@ -39,10 +39,12 @@ function PackList({ prices }: { prices: Prices }) {
             key={pack.id}
             action="/api/checkout"
             method="POST"
-            className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5"
+            className="flex flex-col gap-3 rounded-[4px] bg-surface p-6 shadow-[0_1px_0_var(--line),0_18px_40px_-26px_rgba(20,24,43,0.5)]"
           >
             <input type="hidden" name="pack" value={pack.id} />
-            <p className="text-2xl font-semibold">{pack.letters} letters</p>
+            <p className="font-display text-5xl font-extrabold leading-none">
+              {pack.letters} <span className="text-2xl font-bold">letters</span>
+            </p>
             <p className="min-h-6 text-muted">
               {price !== undefined
                 ? `${formatEuro(price)} · ${formatEuro(price / pack.letters)} per letter`
@@ -50,7 +52,7 @@ function PackList({ prices }: { prices: Prices }) {
             </p>
             <button
               type="submit"
-              className="mt-auto rounded-xl bg-accent px-5 py-3 font-semibold text-on-accent hover:bg-accent/90"
+              className="mt-auto rounded-[6px] bg-accent px-5 py-3 font-display text-xl font-bold text-on-accent hover:bg-accent/90"
             >
               Buy {pack.letters} letters
             </button>
@@ -73,23 +75,18 @@ export default function BuyPage() {
         <Link href="/" className="text-sm text-muted hover:underline">
           ← Back
         </Link>
-        <h1 className="text-3xl font-semibold tracking-tight">Letter packs</h1>
-        <p className="text-lg text-muted">
-          Pay once, no account and no subscription. You get a code that works for the number of letters in your pack.
-          Unreadable photos and failed explanations don&apos;t use up a letter.
-        </p>
+        <h1 className="font-display text-5xl font-extrabold leading-none tracking-tight">Letter packs</h1>
+        <p className="text-lg text-muted">Pay once. No account, no subscription. Failed or unreadable letters are free.</p>
       </section>
 
       <Suspense fallback={<PackList prices={{}} />}>
         <PackListWithPrices />
       </Suspense>
 
-      <p className="text-sm text-muted">
-        Payment is handled by Stripe. We never see your card details, and we don&apos;t store your name or email.
-      </p>
+      <p className="text-sm text-muted">Payment by Stripe. We never see your card, name or email.</p>
 
-      <section className="space-y-3 border-t border-line pt-8">
-        <h2 className="text-xl font-semibold">Already have a code?</h2>
+      <section className="space-y-3 border-t border-dashed border-line pt-8">
+        <h2 className="font-display text-2xl font-bold">Already have a code?</h2>
         <CodeForm />
       </section>
     </main>

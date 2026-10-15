@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { PrinterIcon } from "@/components/Icons";
 import { LetterCard } from "@/components/LetterCard";
 import { Uploader, type UploadPayload } from "@/components/Uploader";
 import { todayInGermany } from "@/lib/deadline";
@@ -56,16 +57,10 @@ export function Explainer() {
   if (state.status === "done") {
     const { card, creditsLeft, demo } = state;
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" data-result>
         {demo && (
-          <p role="note" className="rounded-xl border border-warn/40 bg-warn-bg px-4 py-3 text-sm font-medium text-warn">
-            Demo mode: this result is a fixed example and was not made from your upload. Set an API key and remove
-            LLM_MOCK to explain real letters.
-          </p>
-        )}
-        {creditsLeft !== undefined && (
-          <p className="text-center text-sm text-muted print:hidden">
-            {creditsLeft} {creditsLeft === 1 ? "letter" : "letters"} left on your code.
+          <p role="note" className="rounded-[4px] border-l-4 border-warn bg-warn-bg px-4 py-3 text-sm font-medium text-warn">
+            Demo mode: a fixed example, not made from your upload.
           </p>
         )}
         {card.readable ? (
@@ -77,34 +72,40 @@ export function Explainer() {
             <LetterCard card={card} today={todayInGermany()} />
           </div>
         ) : (
-          <div className="space-y-3 rounded-2xl border border-line bg-surface p-5">
-            <h2 className="text-lg font-semibold">We couldn&apos;t read this letter</h2>
-            {card.unreadable_reason && <p>{card.unreadable_reason}</p>}
-            <p className="font-medium">Tips for a better photo:</p>
-            <ul className="list-disc space-y-1 pl-5">
-              <li>Lay the letter on a flat surface.</li>
-              <li>Use good light and avoid shadows and glare.</li>
-              <li>Get the whole page in the frame, with all four corners visible.</li>
+          <div className="space-y-4 rounded-[4px] bg-surface p-6 shadow-[0_1px_0_var(--line),0_18px_40px_-24px_rgba(20,24,43,0.5)]">
+            <h2 className="font-display text-3xl font-bold leading-tight">We couldn&apos;t read this one</h2>
+            {card.unreadable_reason && <p className="text-muted">{card.unreadable_reason}</p>}
+            <ul className="space-y-2">
+              <li>Lay the letter flat.</li>
+              <li>Use good light, no shadows or glare.</li>
+              <li>Get all four corners in the frame.</li>
             </ul>
-            <p className="text-sm text-muted">This did not use up your letter.</p>
+            <p className="text-sm font-medium text-ok">This didn&apos;t use up a letter.</p>
           </div>
         )}
-        {card.readable && (
+        {creditsLeft !== undefined && (
+          <p className="text-sm text-muted print:hidden">
+            {creditsLeft} {creditsLeft === 1 ? "letter" : "letters"} left on your code.
+          </p>
+        )}
+        <div className="flex flex-col gap-3 sm:flex-row print:hidden">
           <button
             type="button"
-            onClick={() => window.print()}
-            className="w-full rounded-xl border border-line px-5 py-3 font-semibold hover:bg-subtle print:hidden"
+            onClick={reset}
+            className="flex-1 rounded-[6px] bg-accent px-5 py-3 font-display text-xl font-bold text-on-accent hover:bg-accent/90"
           >
-            Print or save as PDF
+            {card.readable ? "Explain another letter" : "Try again"}
           </button>
-        )}
-        <button
-          type="button"
-          onClick={reset}
-          className="w-full rounded-xl border border-line px-5 py-3 font-semibold hover:bg-subtle print:hidden"
-        >
-          {card.readable ? "Explain another letter" : "Try again"}
-        </button>
+          {card.readable && (
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="flex items-center justify-center gap-2 rounded-[6px] border-2 border-line px-5 py-3 font-semibold hover:bg-surface"
+            >
+              <PrinterIcon /> Print or save as PDF
+            </button>
+          )}
+        </div>
       </div>
     );
   }
@@ -113,13 +114,14 @@ export function Explainer() {
     <div className="space-y-4">
       <Uploader key={uploadKey} busy={state.status === "loading"} onSubmit={explain} />
       {state.status === "loading" && (
-        <p className="text-center text-sm text-muted" aria-live="polite">
-          Reading and explaining your letter. This usually takes 10 to 20 seconds.
+        <p className="text-lg font-medium" aria-live="polite">
+          <span className="marker marker-loop">Reading your letter</span>
+          <span className="mt-1 block text-sm font-normal text-muted">This takes 10 to 20 seconds.</span>
         </p>
       )}
       {state.status === "error" && (
-        <div role="alert" className="space-y-2 rounded-xl bg-danger-bg px-4 py-3 text-danger">
-          <p>{state.message}</p>
+        <div role="alert" className="space-y-2 rounded-[4px] border-l-4 border-danger bg-danger-bg px-4 py-3 text-danger">
+          <p className="font-medium">{state.message}</p>
           {state.buyUrl && (
             <Link href={state.buyUrl} className="inline-block font-semibold underline">
               See letter packs

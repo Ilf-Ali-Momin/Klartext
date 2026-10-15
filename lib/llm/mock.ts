@@ -19,7 +19,7 @@ export function mockCard(today: string = todayInGermany()): LetterCard {
     readable: true,
     unreadable_reason: null,
     sender: { name: "Beitragsservice Musterstadt (demo)", type: "broadcasting_fee" },
-    letter_type: "Payment reminder (Zahlungserinnerung) · DEMO, not your letter",
+    letter_type: "Payment reminder (Zahlungserinnerung)",
     letter_date: letterDate,
     summary:
       "DEMO RESULT: this card is fictional and was not made from your upload. In a real result you would read a plain English summary here. This example is a reminder that the broadcasting fee for three months is unpaid.",

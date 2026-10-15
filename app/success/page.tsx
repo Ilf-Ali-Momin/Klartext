@@ -33,7 +33,7 @@ async function SuccessContent({ searchParams }: { searchParams: PageProps<"/succ
   if (result.status === "pending") {
     return (
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Your payment is being processed</h1>
+        <h1 className="font-display text-4xl font-extrabold leading-none">Payment in progress</h1>
         <p>Some payment methods take a little longer. Refresh this page in a few minutes to see your code.</p>
       </div>
     );
@@ -41,7 +41,7 @@ async function SuccessContent({ searchParams }: { searchParams: PageProps<"/succ
   if (result.status === "invalid") {
     return (
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">We couldn&apos;t find this payment</h1>
+        <h1 className="font-display text-4xl font-extrabold leading-none">Payment not found</h1>
         <p>
           Check the link, or <Link href="/buy" className="font-semibold underline">go to the letter packs</Link>.
         </p>
@@ -53,18 +53,18 @@ async function SuccessContent({ searchParams }: { searchParams: PageProps<"/succ
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Thank you. Here is your code.</h1>
+        <h1 className="font-display text-5xl font-extrabold leading-none">Here is your code</h1>
         {left !== null && (
           <p className="text-muted">
             It has {left} {left === 1 ? "letter" : "letters"} left.
           </p>
         )}
       </div>
-      <div className="rounded-2xl border border-line bg-surface px-5 py-3">
+      <div className="rounded-[4px] bg-surface px-5 py-3 shadow-[0_1px_0_var(--line),0_18px_40px_-26px_rgba(20,24,43,0.5)]">
         <CopyField label="Your code" value={formatCode(result.code)} />
       </div>
       <SaveCode code={result.code} />
-      <div className="rounded-xl bg-warn-bg p-4 text-warn">
+      <div className="rounded-[4px] border-l-4 border-warn bg-warn-bg p-4 text-warn">
         <p className="font-semibold">Save this code somewhere safe.</p>
         <p className="text-sm">
           It is the only way to use your letters on another device or browser. We don&apos;t have your name or email,
@@ -73,7 +73,7 @@ async function SuccessContent({ searchParams }: { searchParams: PageProps<"/succ
       </div>
       <Link
         href="/"
-        className="block rounded-xl bg-accent px-5 py-3 text-center font-semibold text-on-accent hover:bg-accent/90"
+        className="block rounded-[6px] bg-accent px-5 py-3 text-center font-display text-xl font-bold text-on-accent hover:bg-accent/90"
       >
         Explain a letter
       </Link>

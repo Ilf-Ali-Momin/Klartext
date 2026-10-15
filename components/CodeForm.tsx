@@ -48,12 +48,12 @@ export function CodeForm({ onSaved }: { onSaved?: (creditsLeft: number) => void 
           autoComplete="off"
           autoCapitalize="characters"
           spellCheck={false}
-          className="min-w-0 flex-1 rounded-lg border border-line bg-surface px-3 py-2 font-mono uppercase"
+          className="min-w-0 flex-1 rounded-[6px] border-2 border-line bg-surface px-3 py-2 font-mono uppercase"
         />
         <button
           type="submit"
           disabled={busy || code.trim().length === 0}
-          className="rounded-lg border border-line px-4 py-2 font-medium hover:bg-subtle disabled:opacity-50"
+          className="rounded-[6px] border-2 border-accent px-4 py-2 font-semibold text-accent hover:bg-accent/10 disabled:opacity-50"
         >
           {busy ? "Checking…" : "Use code"}
         </button>

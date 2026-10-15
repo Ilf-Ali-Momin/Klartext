@@ -3,15 +3,6 @@ import type { EnrichedCard } from "@/lib/llm/explain";
 // Example result for the landing page, based on the synthetic fixture fixtures/inkasso-forderung.pdf.
 // All names and numbers are fictional.
 
-export const SAMPLE_LETTER_EXCERPT = [
-  "Muster Inkasso GmbH · Beispielburg, 05.10.2026",
-  "Aktenzeichen: IK-2026-004711",
-  "Forderung aus Mobilfunkvertrag",
-  "Hauptforderung 64,90 Euro, Mahnkosten 5,00 Euro, Inkassokosten 27,45 Euro, Gesamtbetrag 97,35 Euro.",
-  "Bitte zahlen Sie den Gesamtbetrag innerhalb von 14 Tagen ab Datum dieses Schreibens …",
-  "Sollte die Zahlung nicht fristgerecht eingehen, behalten wir uns vor, das gerichtliche Mahnverfahren einzuleiten.",
-];
-
 export const SAMPLE_TODAY = "2026-10-08";
 
 export const SAMPLE_CARD: EnrichedCard = {
