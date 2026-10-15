@@ -6,9 +6,11 @@ Klartext is a web app for international students and newcomers in Germany. You t
 the Finanzamt, the Ausländerbehörde, the Jobcenter, your landlord, an insurer or a debt collector, and you get a
 clear action card: who sent it, what it means, what they want from you, and by when.
 
-> **Status:** a personal project, not a public or commercial service. There is no hosted version: to try it, run
-> it on your own computer (see below). A demo mode shows the whole flow without an API key. Nothing here is legal
-> advice.
+**Live demo: https://klartext-tau.vercel.app**
+
+> **Status:** a personal project, not a public or commercial service. The live demo shows the whole flow with a
+> fixed, fictional example card: your photo is not read or stored. To explain real letters, run it on your own
+> computer with an API key (see below). Nothing here is legal advice.
 
 <table>
   <tr>
@@ -76,7 +78,7 @@ structured outputs) · Zod · Stripe Checkout · Supabase Postgres · Vitest
 
 ## Run it on your own computer (demo mode, no API key)
 
-The app is not online. These steps start it on your own machine, which takes a few minutes. You need
+These steps start it on your own machine, which takes a few minutes. You need
 [Node.js](https://nodejs.org) 22 or later and git.
 
 ```bash
