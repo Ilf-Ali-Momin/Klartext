@@ -143,8 +143,6 @@ supabase/migrations/ tables and atomic Postgres functions for credits and usage 
 docs/                data flows and screenshots
 ```
 
-keep.
-
 ## Deploy (optional)
 
 - **Vercel:** [`vercel.json`](vercel.json) pins functions to `fra1`. Set the environment variables in the project
@@ -155,7 +153,7 @@ keep.
   `checkout.session.async_payment_succeeded` pointing to `/api/stripe/webhook`.
 
 This is a personal project. Offering it to the public in Germany would need more, such as an Impressum, a privacy
-policy and data processing agreements with every provider. See the owner launch checklist at the end of
+policy and data processing agreements with every provider.
 
 ## Disclaimer
 
